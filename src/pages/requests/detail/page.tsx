@@ -717,15 +717,20 @@ export default function RequestDetailPage() {
               견적·계약으로 자동 연결되었어요. 공연자가 견적서를 보내면 계약을 진행할 수 있습니다.
             </p>
             <div className="flex flex-col gap-2">
-              <Link
-                to="/quotes"
-                className="w-full py-3 rounded-lg bg-primary-500 text-background-50 text-sm font-medium hover:bg-primary-600 transition-colors whitespace-nowrap"
+              <button
+                type="button"
+                onClick={() => {
+                  setAcceptedNotice(false);
+                  navigate('/quotes');
+                }}
+                className="w-full py-3 rounded-lg bg-primary-500 text-background-50 text-sm font-semibold hover:bg-primary-600 transition-colors whitespace-nowrap cursor-pointer shadow-sm text-center block"
               >
                 견적·계약 관리로 이동
-              </Link>
+              </button>
               <button
+                type="button"
                 onClick={() => setAcceptedNotice(false)}
-                className="w-full py-3 rounded-lg border border-background-300 text-foreground-600 text-sm font-medium hover:bg-background-100 transition-colors whitespace-nowrap"
+                className="w-full py-3 rounded-lg border border-background-300 text-foreground-600 text-sm font-medium hover:bg-background-100 transition-colors whitespace-nowrap cursor-pointer"
               >
                 닫기
               </button>
