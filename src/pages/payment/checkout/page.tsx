@@ -117,7 +117,10 @@ export default function PaymentCheckoutPage() {
       preparedRef.current = preparedPayment;
       setServerAmount(preparedPayment.amount);
 
-      const tossPayments = await loadTossPayments(import.meta.env.VITE_PUBLIC_TOSS_CLIENT_KEY);
+      const tossClientKey =
+        (import.meta.env.VITE_PUBLIC_TOSS_CLIENT_KEY as string) ||
+        'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+      const tossPayments = await loadTossPayments(tossClientKey);
       if (cancelled) return;
 
       const customerKey = preparedPayment.customerKey ?? ANONYMOUS;
