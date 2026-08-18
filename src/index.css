@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-heading: 'Space Grotesk', 'Noto Sans KR', sans-serif;
+    --font-body: 'Noto Sans KR', sans-serif;
+    --font-label: 'Noto Sans KR', sans-serif;
+
+    --primary-50: 0.97 0.02 25;
+    --primary-100: 0.94 0.04 25;
+    --primary-200: 0.88 0.08 25;
+    --primary-300: 0.78 0.12 25;
+    --primary-400: 0.68 0.16 25;
+    --primary-500: 0.60 0.20 25;
+    --primary-600: 0.52 0.18 25;
+    --primary-700: 0.44 0.16 25;
+    --primary-800: 0.36 0.12 25;
+    --primary-900: 0.28 0.08 25;
+    --primary-950: 0.20 0.06 25;
+
+    --accent-50: 0.96 0.02 165;
+    --accent-100: 0.93 0.04 165;
+    --accent-200: 0.86 0.08 165;
+    --accent-300: 0.76 0.12 165;
+    --accent-400: 0.66 0.14 165;
+    --accent-500: 0.58 0.16 165;
+    --accent-600: 0.50 0.14 165;
+    --accent-700: 0.42 0.12 165;
+    --accent-800: 0.34 0.10 165;
+    --accent-900: 0.26 0.08 165;
+    --accent-950: 0.18 0.06 165;
+
+    --secondary-50: 0.96 0.01 80;
+    --secondary-100: 0.92 0.02 80;
+    --secondary-200: 0.84 0.04 80;
+    --secondary-300: 0.76 0.06 80;
+    --secondary-400: 0.68 0.08 80;
+    --secondary-500: 0.60 0.10 80;
+    --secondary-600: 0.52 0.09 80;
+    --secondary-700: 0.44 0.08 80;
+    --secondary-800: 0.36 0.06 80;
+    --secondary-900: 0.28 0.04 80;
+    --secondary-950: 0.20 0.03 80;
+
+    --background-50: 0.99 0.005 60;
+    --background-100: 0.98 0.01 60;
+    --background-200: 0.95 0.02 60;
+    --background-300: 0.90 0.03 60;
+    --background-400: 0.84 0.04 60;
+    --background-500: 0.76 0.05 60;
+    --background-600: 0.66 0.04 60;
+    --background-700: 0.56 0.03 60;
+    --background-800: 0.46 0.02 60;
+    --background-900: 0.36 0.01 60;
+    --background-950: 0.26 0.005 60;
+
+    --foreground-50: 0.98 0.005 280;
+    --foreground-100: 0.94 0.01 280;
+    --foreground-200: 0.86 0.02 280;
+    --foreground-300: 0.74 0.03 280;
+    --foreground-400: 0.62 0.04 280;
+    --foreground-500: 0.50 0.05 280;
+    --foreground-600: 0.40 0.04 280;
+    --foreground-700: 0.30 0.03 280;
+    --foreground-800: 0.20 0.02 280;
+    --foreground-900: 0.15 0.01 280;
+    --foreground-950: 0.10 0.005 280;
+  }
+}
+
+@keyframes realtime-highlight {
+  0% {
+    background-color: oklch(var(--accent-100));
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.realtime-highlight {
+  animation: realtime-highlight 2.5s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-in {
+  animation: toast-in 0.3s ease-out;
+}
+
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
