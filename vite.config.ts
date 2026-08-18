@@ -72,11 +72,11 @@ export default defineConfig({
   base,
   build: {
     sourcemap: true,
-    outDir: 'out',
+    outDir: 'dist',
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
+      "@": resolve(import.meta.dirname, "./src"),
     },
   },
   server: {
