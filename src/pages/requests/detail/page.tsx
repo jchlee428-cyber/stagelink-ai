@@ -100,18 +100,14 @@ export default function RequestDetailPage() {
   const [actionId, setActionId] = useState<string | null>(null);
 
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const isOwner = !!user && !!request && (profile?.role === 'admin' || request.clientId === user.id);
   const isPerformer = profile?.role === 'performer';
 
-  const handleDeleteRequest = async () => {
+  const confirmDelete = async () => {
     if (!request) return;
-    const ok = window.confirm(
-      '정말로 이 공연 요청을 삭제하시겠습니까?\n삭제 후에는 복구할 수 없습니다.',
-    );
-    if (!ok) return;
-
     setDeleting(true);
     try {
       if (isRealId) {
@@ -124,14 +120,18 @@ export default function RequestDetailPage() {
         if (error) {
           alert(`삭제 중 오류가 발생했습니다: ${error.message}`);
           setDeleting(false);
+          setDeleteConfirmOpen(false);
           return;
         }
       }
-      alert('공연 요청이 삭제되었습니다.');
+      setDeleting(false);
+      setDeleteConfirmOpen(false);
+      alert('공연 요청이 성공적으로 삭제되었습니다.');
       navigate('/requests', { replace: true });
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.');
       setDeleting(false);
+      setDeleteConfirmOpen(false);
     }
   };
 
@@ -459,12 +459,11 @@ export default function RequestDetailPage() {
                       </button>
                       <button
                         type="button"
-                        onClick={handleDeleteRequest}
-                        disabled={deleting}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-accent-200 bg-accent-50/70 text-xs font-semibold text-accent-700 hover:bg-accent-100 transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+                        onClick={() => setDeleteConfirmOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-xs font-semibold text-red-600 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer shadow-xs"
                       >
                         <i className="ri-delete-bin-line text-sm" />
-                        {deleting ? '삭제 중...' : '삭제하기'}
+                        삭제하기
                       </button>
                     </div>
                   )}
@@ -742,6 +741,42 @@ export default function RequestDetailPage() {
           onClose={() => setEditOpen(false)}
           onSaved={() => loadRequest()}
         />
+      )}
+
+      {/* 삭제 확인 모달 */}
+      {deleteConfirmOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-background-50 rounded-2xl border border-background-200 p-6 max-w-sm w-full text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600 text-2xl">
+              <i className="ri-delete-bin-line" />
+            </div>
+            <h3 className="font-heading font-bold text-foreground-950 text-lg mb-2">
+              공연 요청을 삭제하시겠습니까?
+            </h3>
+            <p className="text-xs text-foreground-600 mb-6 leading-relaxed">
+              삭제하시면 해당 요청과 관련된 지원 내역이 모두 함께 삭제되며 복구할 수 없습니다.
+            </p>
+            <div className="flex gap-2.5">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmOpen(false)}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg border border-background-300 text-foreground-700 text-sm font-medium hover:bg-background-100 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                {deleting && <i className="ri-loader-4-line animate-spin" />}
+                {deleting ? '삭제 중...' : '삭제'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
