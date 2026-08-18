@@ -174,8 +174,14 @@ export default function NotificationsPage() {
                       type="button"
                       onClick={() => {
                         markRead(n.id);
-                        if (n.relatedId) {
-                          navigate(n.type === 'quote' ? '/quotes' : `/requests/${n.relatedId}`);
+                        if (
+                          n.type === 'quote' ||
+                          n.title?.includes('수락') ||
+                          n.message?.includes('견적')
+                        ) {
+                          navigate('/quotes');
+                        } else if (n.relatedId) {
+                          navigate(`/requests/${n.relatedId}`);
                         }
                       }}
                       className={`w-full text-left flex items-start gap-3 p-4 rounded-lg transition-colors ${

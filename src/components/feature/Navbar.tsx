@@ -149,6 +149,14 @@ export default function Navbar() {
                         <i className="ri-dashboard-line mr-2" />
                         마이페이지
                       </Link>
+                      <Link
+                        to="/quotes"
+                        onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-foreground-700 hover:bg-background-100 whitespace-nowrap"
+                      >
+                        <i className="ri-file-list-3-line mr-2 text-primary-600" />
+                        견적·계약 관리
+                      </Link>
                       {(profile?.role === 'performer' || profile?.role === 'admin') && (
                         <Link
                           to="/schedule"
@@ -248,6 +256,14 @@ export default function Navbar() {
                   >
                     <i className="ri-dashboard-line mr-2" />
                     마이페이지
+                  </Link>
+                  <Link
+                    to="/quotes"
+                    className="px-4 py-3 rounded-lg text-foreground-700 hover:bg-background-100 text-sm font-medium"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <i className="ri-file-list-3-line mr-2 text-primary-600" />
+                    견적·계약 관리
                   </Link>
                   {(profile?.role === 'performer' || profile?.role === 'admin') && (
                     <Link
