@@ -5,6 +5,7 @@ import Navbar from '@/components/feature/Navbar';
 import Footer from '@/components/feature/Footer';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
+import RequestEditModal from './components/RequestEditModal';
 
 interface Application {
   id: string;
@@ -98,8 +99,41 @@ export default function RequestDetailPage() {
   const [acceptedNotice, setAcceptedNotice] = useState(false);
   const [actionId, setActionId] = useState<string | null>(null);
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const isOwner = !!user && !!request && (profile?.role === 'admin' || request.clientId === user.id);
   const isPerformer = profile?.role === 'performer';
+
+  const handleDeleteRequest = async () => {
+    if (!request) return;
+    const ok = window.confirm(
+      '정말로 이 공연 요청을 삭제하시겠습니까?\n삭제 후에는 복구할 수 없습니다.',
+    );
+    if (!ok) return;
+
+    setDeleting(true);
+    try {
+      if (isRealId) {
+        await supabase.from('applications').delete().eq('request_id', request.id);
+        const { error } = await supabase
+          .from('performance_requests')
+          .delete()
+          .eq('id', request.id);
+
+        if (error) {
+          alert(`삭제 중 오류가 발생했습니다: ${error.message}`);
+          setDeleting(false);
+          return;
+        }
+      }
+      alert('공연 요청이 삭제되었습니다.');
+      navigate('/requests', { replace: true });
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.');
+      setDeleting(false);
+    }
+  };
 
   const loadRequest = useCallback((silent = false) => {
     if (!id) return;
@@ -398,16 +432,41 @@ export default function RequestDetailPage() {
 
             <div className="bg-background-50 rounded-2xl border border-background-200 overflow-hidden mb-6">
               <div className="p-6 md:p-8">
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  {requestStatusBadge(request.status)}
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-900">
-                    {request.eventType || '행사'}
-                  </span>
-                  {request.performerName && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-primary-500 text-background-50">
-                      <i className="ri-user-star-line" />
-                      {request.performerName} 공연 의뢰
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    {requestStatusBadge(request.status)}
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-900">
+                      {request.eventType || '행사'}
                     </span>
+                    {request.performerName && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-primary-500 text-background-50">
+                        <i className="ri-user-star-line" />
+                        {request.performerName} 공연 의뢰
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 요청자(수요자) / 관리자 수정 및 삭제 기능 */}
+                  {isOwner && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-background-300 bg-background-50 text-xs font-semibold text-foreground-700 hover:bg-background-100 hover:text-foreground-950 transition-colors cursor-pointer shadow-xs"
+                      >
+                        <i className="ri-edit-line text-sm text-primary-600" />
+                        수정하기
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDeleteRequest}
+                        disabled={deleting}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-accent-200 bg-accent-50/70 text-xs font-semibold text-accent-700 hover:bg-accent-100 transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+                      >
+                        <i className="ri-delete-bin-line text-sm" />
+                        {deleting ? '삭제 중...' : '삭제하기'}
+                      </button>
+                    </div>
                   )}
                 </div>
 
@@ -674,6 +733,15 @@ export default function RequestDetailPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {editOpen && request && (
+        <RequestEditModal
+          open={editOpen}
+          request={request}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => loadRequest()}
+        />
       )}
     </div>
   );
